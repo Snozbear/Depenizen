@@ -1,6 +1,6 @@
-package com.denizenscript.depenizen.bukkit.events.skillapi;
+package com.denizenscript.depenizen.bukkit.events.fabled;
 
-import com.sucy.skill.api.event.PlayerSkillUnlockEvent;
+import studio.magemonkey.fabled.api.event.PlayerSkillDowngradeEvent;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
@@ -12,23 +12,25 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class SkillAPIPlayerUnlocksSkillScriptEvent extends BukkitScriptEvent implements Listener {
+public class FabledPlayerDowngradesSkillScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // skillapi player unlocks <'skill'>
+    // fabled player downgrades <'skill'>
     //
     // @Location true
     //
-    // @Triggers when a player unlocks a skill in SkillAPI.
+    // @Triggers when a player downgrades a skill in Fabled.
     //
     // @Context
-    // <context.skill_name> returns the name of the skill unlocked.
+    // <context.level> returns the level the player went down to.
+    // <context.refund> returns how much the the player was refunded.
+    // <context.skill_name> returns the name of the skill downgraded.
     //
     // @Determine
     // None
     //
-    // @Plugin Depenizen, SkillAPI
+    // @Plugin Depenizen, Fabled
     //
     // @Player Always.
     //
@@ -36,13 +38,15 @@ public class SkillAPIPlayerUnlocksSkillScriptEvent extends BukkitScriptEvent imp
     //
     // -->
 
-    public SkillAPIPlayerUnlocksSkillScriptEvent() {
-        registerCouldMatcher("skillapi player unlocks <'skill'>");
+    public FabledPlayerDowngradesSkillScriptEvent() {
+        registerCouldMatcher("fabled player downgrades <'skill'>");
     }
 
-    public PlayerSkillUnlockEvent event;
+    public PlayerSkillDowngradeEvent event;
     public PlayerTag player;
+    public ElementTag level;
     public ElementTag skill;
+    public ElementTag refund;
 
     @Override
     public boolean matches(ScriptPath path) {
@@ -66,19 +70,26 @@ public class SkillAPIPlayerUnlocksSkillScriptEvent extends BukkitScriptEvent imp
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("skill_name")) {
-            return skill;
+        switch (name) {
+            case "level":
+                return level;
+            case "refund":
+                return refund;
+            case "skill_name":
+                return skill;
         }
         return super.getContext(name);
     }
 
     @EventHandler
-    public void onSkillAPIPlayerUnlocksSkill(PlayerSkillUnlockEvent event) {
+    public void onFabledPlayerDowngradesSkill(PlayerSkillDowngradeEvent event) {
         if (!EntityTag.isPlayer(event.getPlayerData().getPlayer())) {
             return;
         }
         player = PlayerTag.mirrorBukkitPlayer(event.getPlayerData().getPlayer());
-        skill = new ElementTag(event.getUnlockedSkill().getData().getName());
+        level = new ElementTag(event.getDowngradedSkill().getLevel());
+        refund = new ElementTag(event.getRefund());
+        skill = new ElementTag(event.getDowngradedSkill().getData().getName());
         this.event = event;
         fire(event);
     }

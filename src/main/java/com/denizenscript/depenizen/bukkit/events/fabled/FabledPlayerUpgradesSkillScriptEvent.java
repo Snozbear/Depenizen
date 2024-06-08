@@ -1,6 +1,6 @@
-package com.denizenscript.depenizen.bukkit.events.skillapi;
+package com.denizenscript.depenizen.bukkit.events.fabled;
 
-import com.sucy.skill.api.event.PlayerSkillUpgradeEvent;
+import studio.magemonkey.fabled.api.event.PlayerSkillUpgradeEvent;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
@@ -12,15 +12,15 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class SkillAPIPlayerUpgradesSkillScriptEvent extends BukkitScriptEvent implements Listener {
+public class FabledPlayerUpgradesSkillScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // skillapi player upgrades <'skill'>
+    // fabled player upgrades <'skill'>
     //
     // @Location true
     //
-    // @Triggers when a player upgrades a skill in SkillAPI.
+    // @Triggers when a player upgrades a skill in Fabled.
     //
     // @Context
     // <context.level> returns the level the player went up to.
@@ -30,7 +30,7 @@ public class SkillAPIPlayerUpgradesSkillScriptEvent extends BukkitScriptEvent im
     // @Determine
     // None
     //
-    // @Plugin Depenizen, SkillAPI
+    // @Plugin Depenizen, Fabled
     //
     // @Player Always.
     //
@@ -38,8 +38,8 @@ public class SkillAPIPlayerUpgradesSkillScriptEvent extends BukkitScriptEvent im
     //
     // -->
 
-    public SkillAPIPlayerUpgradesSkillScriptEvent() {
-        registerCouldMatcher("skillapi player upgrades <'skill'>");
+    public FabledPlayerUpgradesSkillScriptEvent() {
+        registerCouldMatcher("fabled player upgrades <'skill'>");
     }
 
     public PlayerSkillUpgradeEvent event;
@@ -81,7 +81,7 @@ public class SkillAPIPlayerUpgradesSkillScriptEvent extends BukkitScriptEvent im
     }
 
     @EventHandler
-    public void onSkillAPIPlayerUpgradesSkill(PlayerSkillUpgradeEvent event) {
+    public void onFabledPlayerUpgradesSkill(PlayerSkillUpgradeEvent event) {
         if (!EntityTag.isPlayer(event.getPlayerData().getPlayer())) {
             return;
         }

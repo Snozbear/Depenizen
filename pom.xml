@@ -304,10 +304,10 @@
         </dependency>
         <dependency>
             <groupId>com.sucy</groupId>
-            <artifactId>SkillAPI</artifactId>
+            <artifactId>Fabled</artifactId>
             <version>3.37</version>
             <scope>system</scope>
-            <systemPath>${basedir}/lib/SkillAPI.jar</systemPath>
+            <systemPath>${basedir}/lib/Fabled.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.khorn</groupId>

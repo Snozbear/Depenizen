@@ -39,7 +39,7 @@ softdepend:
     - Residence
     - Sentinel
     - Shopkeepers
-    - SkillAPI
+    - Fabled
     - TerrainControl
     - Towny
     - TownyChat

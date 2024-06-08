@@ -1,7 +1,6 @@
-package com.denizenscript.depenizen.bukkit.events.skillapi;
+package com.denizenscript.depenizen.bukkit.events.fabled;
 
-import com.denizenscript.depenizen.bukkit.objects.skillapi.SkillAPIClassTag;
-import com.sucy.skill.api.event.PlayerLevelUpEvent;
+import studio.magemonkey.fabled.api.event.PlayerSkillUnlockEvent;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
@@ -9,28 +8,27 @@ import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class SkillAPIPlayerLevelsUpScriptEvent extends BukkitScriptEvent implements Listener {
+public class FabledPlayerUnlocksSkillScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // skillapi player levels up
+    // fabled player unlocks <'skill'>
     //
     // @Location true
     //
-    // @Triggers when a player levels up in SkillAPI.
+    // @Triggers when a player unlocks a skill in Fabled.
     //
     // @Context
-    // <context.level> returns the level the player went up to.
-    // <context.gained> returns how many levels the player gained.
-    // <context.class> returns the SkillAPIClass the player is leveling up in.
+    // <context.skill_name> returns the name of the skill unlocked.
     //
     // @Determine
     // None
     //
-    // @Plugin Depenizen, SkillAPI
+    // @Plugin Depenizen, Fabled
     //
     // @Player Always.
     //
@@ -38,18 +36,21 @@ public class SkillAPIPlayerLevelsUpScriptEvent extends BukkitScriptEvent impleme
     //
     // -->
 
-    public SkillAPIPlayerLevelsUpScriptEvent() {
-        registerCouldMatcher("skillapi player levels up");
+    public FabledPlayerUnlocksSkillScriptEvent() {
+        registerCouldMatcher("fabled player unlocks <'skill'>");
     }
 
-    public PlayerLevelUpEvent event;
+    public PlayerSkillUnlockEvent event;
     public PlayerTag player;
-    public int level;
-    public int gained;
-    public SkillAPIClassTag skillAPIClass;
+    public ElementTag skill;
 
     @Override
     public boolean matches(ScriptPath path) {
+        String skill = path.eventArgLowerAt(3);
+
+        if (!skill.equals("skill") && !skill.equals(CoreUtilities.toLowerCase(this.skill.asString()))) {
+            return false;
+        }
 
         if (!runInCheck(path, player.getLocation())) {
             return false;
@@ -65,26 +66,19 @@ public class SkillAPIPlayerLevelsUpScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "level":
-                return new ElementTag(level);
-            case "gained":
-                return new ElementTag(gained);
-            case "class":
-                return skillAPIClass;
+        if (name.equals("skill_name")) {
+            return skill;
         }
         return super.getContext(name);
     }
 
     @EventHandler
-    public void onSkillAPIPlayerLevelsUp(PlayerLevelUpEvent event) {
+    public void onFabledPlayerUnlocksSkill(PlayerSkillUnlockEvent event) {
         if (!EntityTag.isPlayer(event.getPlayerData().getPlayer())) {
             return;
         }
         player = PlayerTag.mirrorBukkitPlayer(event.getPlayerData().getPlayer());
-        level = event.getLevel();
-        gained = event.getAmount();
-        skillAPIClass = new SkillAPIClassTag(event.getPlayerClass().getData());
+        skill = new ElementTag(event.getUnlockedSkill().getData().getName());
         this.event = event;
         fire(event);
     }
